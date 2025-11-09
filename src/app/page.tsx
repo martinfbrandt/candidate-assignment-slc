@@ -17,19 +17,20 @@ export default function Home() {
   }, []);
 
   const onChange = (e) => {
+    
     const searchTerm = e.target.value;
 
     document.getElementById("search-term").innerHTML = searchTerm;
 
-    console.log("filtering advocates...");
+    console.log("filtering advocates...", searchTerm);
     const filteredAdvocates = advocates.filter((advocate) => {
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
+        advocate.firstName.toLowerCase().includes(searchTerm) ||
+        advocate.lastName.toLowerCase().includes(searchTerm) ||
+         advocate.city.toLowerCase().includes(searchTerm) ||
+         advocate.degree.toLowerCase().includes(searchTerm) ||
+         advocate.specialties.filter(specialty => specialty.toLowerCase().includes(searchTerm)).length > 0 ||
+         advocate.yearsOfExperience.toString().includes(searchTerm) 
       );
     });
 
