@@ -1,18 +1,36 @@
 "use client";
 
-export const SearchContainer = ({ searchTerm, onResetSearch, onChange }) => (
-  <div className="pt-10 pb-10">
+export const SearchContainer = ({
+  searchTerm,
+  onResetSearch,
+  onChange,
+  onSelectFilter,
+}) => (
+  <div className="pt-10 pb-10 pl-10 bg-blue-100 w-300">
     <h2 className="mb-2">Search</h2>
 
     <input
       className="border-1 border-solid border p-3"
-      onChange={onChange}
+      onChange={(e) => onChange(e.target.value)}
       type="text"
       value={searchTerm}
       autoFocus
     />
-    <button
+    <select
+      onChange={onSelectFilter}
       className="border-1 border-solid border p-3 ml-5"
+      name="filterName"
+    >
+      <option value="firstName">First Name</option>
+      <option value="lastName">Last Name</option>
+      <option value="city">City</option>
+      <option value="degree">Degree</option>
+      <option value="specialties">Specialties</option>
+      <option value="yearsOfExperience">Years of Experience</option>
+      <option value="phoneNumber">Phone Number</option>
+    </select>
+    <button
+      className="border-1 border-solid border p-3 ml-5 bg-gray-100"
       onClick={onResetSearch}
     >
       Reset Search
@@ -69,7 +87,7 @@ export const SearchRow = ({ advocate }) => (
 
 export const SearchTable = ({ filteredAdvocates }) => {
   return (
-    <table className="table-auto w-full text-left  min-w-max">
+    <table className="table-auto w-full text-left  min-w-max pl-10">
       <thead>
         <tr>
           <th className="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
