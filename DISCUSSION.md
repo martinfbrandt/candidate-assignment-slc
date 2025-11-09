@@ -4,3 +4,8 @@ I wasn't able to get Docker properly set up. I wasn't sure if there was an .env 
 * I would filter the results by the search term, so that we don't have to perform this operation on the client side
 
 
+Other UI improvements i'd like to make:
+* scrolling as discussed above
+* fix bug clearing filter name
+* cleanup and genericization of the search components so they could be used in other cases
+* actually create and use Typescript types ☹️
