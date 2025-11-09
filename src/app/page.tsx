@@ -2,12 +2,13 @@
 import "./globals.css";
 
 import { useEffect, useRef, useState } from "react";
-import { SearchContainer,  SearchTable } from "@/components/SearchComponents";
+import { SearchContainer, SearchTable } from "@/components/SearchComponents";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterName, setFilterName] = useState("firstName");
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -19,38 +20,44 @@ export default function Home() {
     });
   }, []);
 
-  const onSearch = (e) => {
-    setSearchTerm(e.target.value);
+  const onSearch = (search, filterBy = filterName) => {
+    setSearchTerm(search);
     const filteredAdvocates = advocates.filter((advocate) => {
-      return (
-        advocate.firstName.toLowerCase().includes(e.target.value) ||
-        advocate.lastName.toLowerCase().includes(e.target.value) ||
-        advocate.city.toLowerCase().includes(e.target.value) ||
-        advocate.degree.toLowerCase().includes(e.target.value) ||
-        advocate.specialties.filter((specialty) =>
-          specialty.toLowerCase().includes(e.target.value)
-        ).length > 0 ||
-        advocate.yearsOfExperience.toString().includes(e.target.value)
-      );
+      if (filterBy === "specialties") {
+        return (
+          advocate.specialties.filter((specialty) =>
+            specialty.toLowerCase().includes(search)
+          ).length > 0
+        );
+      }
+      return advocate[filterBy]
+        .toString()
+        .toLowerCase()
+        .includes(search);
     });
 
     setFilteredAdvocates(filteredAdvocates);
   };
 
+  const onSelectFilter = (e) => {
+    setFilterName(e.target.value);
+    onSearch(searchTerm, e.target.value)
+  };
+
   const onResetSearch = () => {
-    setSearchTerm(null)
+    setSearchTerm("");
+    setFilterName('firstName')
     setFilteredAdvocates(advocates);
   };
 
-  
-
   return (
     <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
+      <h1 className="text-xl pb-10 pl-10 pt-10">Solace Advocates</h1>
 
       <SearchContainer
         searchTerm={searchTerm}
         onChange={onSearch}
+        onSelectFilter={onSelectFilter}
         onResetSearch={onResetSearch}
       />
 
