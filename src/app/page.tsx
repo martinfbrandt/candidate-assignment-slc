@@ -1,10 +1,13 @@
 "use client";
+import "./globals.css";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { SearchContainer,  SearchTable } from "@/components/SearchComponents";
 
 export default function Home() {
   const [advocates, setAdvocates] = useState([]);
   const [filteredAdvocates, setFilteredAdvocates] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(null);
 
   useEffect(() => {
     console.log("fetching advocates...");
@@ -16,77 +19,42 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = (e) => {
-    
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...", searchTerm);
+  const onSearch = (e) => {
+    setSearchTerm(e.target.value);
     const filteredAdvocates = advocates.filter((advocate) => {
       return (
-        advocate.firstName.toLowerCase().includes(searchTerm) ||
-        advocate.lastName.toLowerCase().includes(searchTerm) ||
-         advocate.city.toLowerCase().includes(searchTerm) ||
-         advocate.degree.toLowerCase().includes(searchTerm) ||
-         advocate.specialties.filter(specialty => specialty.toLowerCase().includes(searchTerm)).length > 0 ||
-         advocate.yearsOfExperience.toString().includes(searchTerm) 
+        advocate.firstName.toLowerCase().includes(e.target.value) ||
+        advocate.lastName.toLowerCase().includes(e.target.value) ||
+        advocate.city.toLowerCase().includes(e.target.value) ||
+        advocate.degree.toLowerCase().includes(e.target.value) ||
+        advocate.specialties.filter((specialty) =>
+          specialty.toLowerCase().includes(e.target.value)
+        ).length > 0 ||
+        advocate.yearsOfExperience.toString().includes(e.target.value)
       );
     });
 
     setFilteredAdvocates(filteredAdvocates);
   };
 
-  const onClick = () => {
-    console.log(advocates);
+  const onResetSearch = () => {
+    setSearchTerm(null)
     setFilteredAdvocates(advocates);
   };
+
+  
 
   return (
     <main style={{ margin: "24px" }}>
       <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>City</th>
-          <th>Degree</th>
-          <th>Specialties</th>
-          <th>Years of Experience</th>
-          <th>Phone Number</th>
-        </thead>
-        <tbody>
-          {filteredAdvocates.map((advocate) => {
-            return (
-              <tr>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((s) => (
-                    <div>{s}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+
+      <SearchContainer
+        searchTerm={searchTerm}
+        onChange={onSearch}
+        onResetSearch={onResetSearch}
+      />
+
+      <SearchTable filteredAdvocates={filteredAdvocates} />
     </main>
   );
 }
